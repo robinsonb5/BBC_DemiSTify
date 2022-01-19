@@ -217,6 +217,7 @@ architecture rtl of chameleon64v2_top is
 	signal spi_ss4 : std_logic;
 	signal conf_data0 : std_logic;
 	signal spi_clk_int : std_logic;
+	signal spi_srtc : std_logic;
 	
 	signal iec_srq_in : std_logic;
 	signal iec_atn_in : std_logic;
@@ -237,7 +238,7 @@ begin
 
 	-- put these here?
 	flash_cs <= '1';
-	rtc_cs <= '0';
+	rtc_cs <= not spi_srtc;
 	
 	clock_ior <='1';
 	clock_iow <='1';
@@ -496,6 +497,7 @@ begin
 		spi_ss3 => spi_ss3,
 		spi_ss4 => spi_ss4,
 		conf_data0 => conf_data0,
+		spi_srtc => spi_srtc,
 		
 		-- PS/2 signals
 		ps2k_clk_in => ps2_keyboard_clk_in,

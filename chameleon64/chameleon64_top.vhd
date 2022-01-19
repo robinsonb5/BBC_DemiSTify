@@ -120,6 +120,7 @@ architecture rtl of chameleon64_top is
 	signal spi_clk : std_logic;
 	signal spi_ack : std_logic;
 	signal spi_req : std_logic;
+	signal spi_srtc : std_logic;
 
 -- internal SPI signals
 	
@@ -195,7 +196,7 @@ architecture rtl of chameleon64_top is
 	signal iec_clk_out_r : std_logic;
 begin
 
-rtc_cs<='0';
+rtc_cs<=not spi_srtc;
 
 -- -----------------------------------------------------------------------
 -- Clocks and PLL
@@ -459,8 +460,10 @@ rtc_cs<='0';
 	controller : entity work.substitute_mcu
 	generic map (
 		sysclk_frequency => 500,
+		spirtc => true,
 		debug => false,
 		jtag_uart => false,
+		
 		SPI_EXTERNALCLK => true
 	)
 	port map (
@@ -481,6 +484,7 @@ rtc_cs<='0';
 		conf_data0 => conf_data0,
 		spi_req => spi_req,
 		spi_ack => spi_ack,
+		spi_srtc => spi_srtc,
 		
 		-- PS/2 signals
 		ps2k_clk_in => ps2_keyboard_clk_in,
