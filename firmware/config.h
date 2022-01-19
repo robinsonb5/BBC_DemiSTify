@@ -39,5 +39,15 @@ here, the number of units defaults to 4. */
 #define ROM_REQUIRED
 #define ROM_FILENAME "BBC     ROM"
 
+/* Do we support settings files */
+/* For the BBC core the settings file will contain the CMOS RAM */
+
+#define CONFIG_SETTINGS_FILENAME "BBC     CFG"
+#define CONFIG_SETTINGS
+
+
+/* Do we support the Real Time Clock (if available)? */
+#define CONFIG_RTC
+
 #endif
 

@@ -5,7 +5,7 @@ PROJECTPATH=./
 PROJECTTOROOT=../
 BOARD=
 ROMSIZE1=8192
-ROMSIZE2=4096
+ROMSIZE2=8192
 
 all: $(DEMISTIFYPATH)/site.template $(DEMISTIFYPATH)/site.mk $(SUBMODULES) firmware init compile tns
 # Use the file least likely to change within DeMiSTify to detect submodules!
