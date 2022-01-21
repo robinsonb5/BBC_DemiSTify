@@ -461,7 +461,7 @@ rtc_cs<=not spi_srtc;
 	generic map (
 		sysclk_frequency => 500,
 		spirtc => true,
-		debug => false,
+		debug => true,
 		jtag_uart => false,
 		
 		SPI_EXTERNALCLK => true
@@ -505,6 +505,8 @@ rtc_cs<=not spi_srtc;
 
 		buttons => (0=>menu_button_n,others=>'0'),
 
+		c64_keys => std_logic_vector(c64_keys(63 downto 0)),
+		
 		-- UART
 		rxd => rs232_rxd,
 		txd => rs232_txd,

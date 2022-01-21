@@ -5,11 +5,16 @@
 #include "menu.h"
 #include "minfat.h"
 #include "spi.h"
+#include "ps2.h"
 #include "uart.h"
 #include "user_io.h"
+#include "spi.h"
+#include "timer.h"
 
 #include <stdio.h>
 #include <string.h>
+
+#include "c64keys.c"
 
 extern unsigned char romtype;
 int LoadROM(const char *fn);
@@ -248,5 +253,21 @@ char *autoboot()
 	if(!LoadROM(bootrom_name))
 		result="ROM loading failed";
     return(result);
+}
+
+char *get_rtc();
+
+void mainloop()
+{
+	int framecounter;
+	initc64keys();
+	while(1)
+	{
+		handlec64keys();
+		Menu_Run();
+		diskimg_poll();
+		if((framecounter++&8191)==0)
+			user_io_send_rtc(get_rtc());
+	}
 }
 

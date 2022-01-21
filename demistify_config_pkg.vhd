@@ -68,8 +68,8 @@ COMPONENT  bbc_mist_top
 		AUDIO_L  : out std_logic;
 		AUDIO_R  : out std_logic;
 		LED      : out std_logic;
-			DAC_L    : out std_logic_vector(15 downto 0);
-        	DAC_R    : out std_logic_vector(15 downto 0)
+		DAC_L    : out std_logic_vector(15 downto 0);
+     	DAC_R    : out std_logic_vector(15 downto 0)
 	);
 END COMPONENT;
 	
