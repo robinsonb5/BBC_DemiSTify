@@ -7,6 +7,8 @@ BOARD=
 ROMSIZE1=8192
 ROMSIZE2=8192
 
+MISTPATH=fpga/mist
+
 all: $(DEMISTIFYPATH)/site.template $(DEMISTIFYPATH)/site.mk $(SUBMODULES) firmware init compile tns
 # Use the file least likely to change within DeMiSTify to detect submodules!
 $(DEMISTIFYPATH)/COPYING:
@@ -21,6 +23,11 @@ $(DEMISTIFYPATH)/site.mk: $(DEMISTIFYPATH)/COPYING
 	$(error site.mk not found.)
 
 include $(DEMISTIFYPATH)/site.mk
+
+ifndef ALERT_COMPLETE
+ALERT_COMPLETE=echo -ne '\007'
+endif
+
 
 $(DEMISTIFYPATH)/EightThirtyTwo/Makefile:
 	git submodule update --init --recursive
@@ -43,6 +50,7 @@ init:
 .PHONY: compile
 compile: 
 	make -f $(DEMISTIFYPATH)/Makefile DEMISTIFYPATH=$(DEMISTIFYPATH) PROJECTTOROOT=$(PROJECTTOROOT) PROJECTPATH=$(PROJECTPATH) PROJECTS=$(PROJECT) BOARD=$(BOARD) compile
+	@$(ALERT_COMPLETE)
 
 .PHONY: clean
 clean:
@@ -53,20 +61,12 @@ tns:
 	@for BOARD in ${BOARDS}; do \
 		echo $$BOARD; \
 		grep -r Design-wide\ TNS $$BOARD/output_files/*.rpt; \
-		echo -ne '\007'; \
 	done
 
 .PHONY: mist
 mist:
 	@echo -n "Compiling $(PROJECT) for MiST... "
-	@$(QUARTUS_MIST)/quartus_sh >mist/compile.log --flow compile mist/$(PROJECT)_MiST.qpf \
-		&& echo "\033[32mSuccess\033[0m" || grep Error mist/compile.log
-	@grep -r Design-wide\ TNS mist/output_files/*.rpt
-
-.PHONY: mister
-mister:
-	@echo -n "Compiling $(PROJECT) for MiSTer... "
-	@$(QUARTUS_MISTER)/quartus_sh >MiSTer/compile.log --flow compile MiSTer/$(PROJECT)_MiSTer.qpf \
-		&& echo "\033[32mSuccess\033[0m" || grep Error MiSTer/compile.log
-	@grep -r Design-wide\ TNS MiSTer/output_files/*.rpt
+	@$(QUARTUS_MIST)/quartus_sh >$(MISTPATH)/compile.log --flow compile $(MISTPATH)/bbc_mist_top.qpf \
+		&& echo "\033[32mSuccess\033[0m" || grep Error $(MISTPATH)/compile.log
+	@grep -r Design-wide\ TNS $(MISTPATH)/output_files/*.rpt
 
