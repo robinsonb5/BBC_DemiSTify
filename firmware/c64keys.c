@@ -54,7 +54,7 @@ struct keyspecial specialtable[]=
 
 unsigned int c64keytable[]=
 {
-	KEY_BACKSPACE, /* $00	Inst/Del */
+	LAYER(KEY_PRTSCRN,KEY_BACKSPACE), /* $00	Inst/Del */
 	LAYER(KEY_NKENTER,KEY_ENTER), /* $01	Return */
 	LAYER(QUAL_BLOCKLAYER|KEY_RCTRL,QUAL_SPECIAL|0), /* $02	Crsr l/r	- special handling needed */
 	LAYER(KEY_F11,QUAL_SPECIAL|5), /* $03	F7/F8 */ /* FIXME - this one scancode exceeds 0x7f */
@@ -63,19 +63,19 @@ unsigned int c64keytable[]=
 	QUAL_SPECIAL|4, /* $06	F5/F6 */
 	LAYER(QUAL_BLOCKLAYER|KEY_ALTGR,QUAL_SPECIAL|1), /* $07	Crsr u/d	- special handling needed */
 
-	KEY_3, /* $08	3 */
+	LAYER(KEY_F3,KEY_3), /* $08	3 */
 	KEY_W, /* $09	W */
 	KEY_A, /* $0A	A */
-	KEY_4, /* $0B	4 */
+	LAYER(KEY_F4,KEY_4), /* $0B	4 */
 	KEY_Z, /* $0C	Z */
 	KEY_S, /* $0D	S */
 	KEY_E, /* $0E	E */
 	QUAL_LSHIFT|KEY_LSHIFT, /* $0F	Left Shift - special handling needed */
 
-	KEY_5, /* $10	5 */
+	LAYER(KEY_F5,KEY_5), /* $10	5 */
 	KEY_R, /* $11	R */
 	KEY_D, /* $12	D */
-	KEY_6, /* $13	6 */
+	LAYER(KEY_F6,KEY_6), /* $13	6 */
 	KEY_C, /* $14	C */
 	KEY_F, /* $15	F */
 	KEY_T, /* $16	T */
@@ -90,10 +90,10 @@ unsigned int c64keytable[]=
 	LAYER(KEY_NK4,KEY_U), /* $1E	U */
 	KEY_V, /* $1F	V */
 
-	LAYER(KEY_NK9,KEY_9), /* $20	9 */
+	LAYER(KEY_F9,KEY_9), /* $20	9 */
 	LAYER(KEY_NK5,KEY_I), /* $21	I */
 	LAYER(KEY_NK1,KEY_J), /* $22	J */
-	LAYER(KEY_NKSLASH,KEY_0), /* $23	0 */
+	LAYER(KEY_F10,KEY_0), /* $23	0 */
 	LAYER(KEY_NK0,KEY_M), /* $24	M */
 	LAYER(KEY_NK2,KEY_K), /* $25	K */
 	LAYER(KEY_NK6,KEY_O), /* $26	O */
@@ -117,12 +117,12 @@ unsigned int c64keytable[]=
 	KEY_HASH, /* $36	↑ */
 	LAYER(KEY_NKPLUS,KEY_SLASH), /* $37	? */
 
-	KEY_1, /* $38	1 */
+	LAYER(KEY_F1,KEY_1), /* $38	1 */
 	LAYER(KEY_MENUKEY,KEY_ESC), /* $39	← */
-	LAYER(KEY_TAB,QUAL_CTRL|KEY_LCTRL), /* $3A	Control */
-	KEY_2, /* $3B	2 */
+	LAYER(KEY_TAB,KEY_TAB), /* $3A	Control */
+	LAYER(KEY_F2,KEY_2), /* $3B	2 */
 	KEY_SPACE, /* $3C	Space */
-	KEY_ALT, /* $3D	Commodore */
+	QUAL_CTRL|KEY_LCTRL, /* $3D	Commodore */
 	KEY_Q, /* $3E	Q */
 	QUAL_LAYERKEY  /* $3F	Run/Stop */
 };
@@ -266,9 +266,19 @@ void handlec64keys()
 					if(amicode&QUAL_LAYERKEY)
 					{
 						if(keyup)	/* Key up? */
+						{
 							c64keys.layer=0;
+							c64keys.layered=0;
+						}
 						else
+						{
 							c64keys.layer=1;
+							if(!c64keys.layered)
+							{
+								c64keyboard_write(&c64keys,KEY_CAPSLOCK);
+								c64keyboard_write(&c64keys,KEY_CAPSLOCK|0x100);
+							}								
+						}
 					}
 					else
 					{

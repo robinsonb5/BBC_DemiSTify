@@ -461,7 +461,7 @@ rtc_cs<=not spi_srtc;
 	generic map (
 		sysclk_frequency => 500,
 		spirtc => true,
-		debug => true,
+		debug => false,
 		jtag_uart => false,
 		
 		SPI_EXTERNALCLK => true
