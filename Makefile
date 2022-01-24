@@ -24,7 +24,7 @@ $(DEMISTIFYPATH)/site.mk: $(DEMISTIFYPATH)/COPYING
 
 include $(DEMISTIFYPATH)/site.mk
 
-ifndef ALERT_COMPLETE
+ifndef NOTIFY_COMPLETE
 ALERT_COMPLETE=echo -ne '\007'
 endif
 
@@ -62,6 +62,7 @@ tns:
 		echo $$BOARD; \
 		grep -r Design-wide\ TNS $$BOARD/output_files/*.rpt; \
 	done
+	@$(NOTIFY_BOARDCOMPLETE) "DeMiSTify: Finished building for all boards"
 
 .PHONY: mist
 mist:
