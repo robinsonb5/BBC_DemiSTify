@@ -478,6 +478,7 @@ begin
 	controller : entity work.substitute_mcu
 	generic map (
 		sysclk_frequency => 500,
+		spirtc => true,
 		debug => false,
 		jtag_uart => false
 	)

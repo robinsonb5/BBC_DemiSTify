@@ -118,7 +118,7 @@ unsigned int c64keytable[]=
 	LAYER(KEY_NKPLUS,KEY_SLASH), /* $37	? */
 
 	LAYER(KEY_F1,KEY_1), /* $38	1 */
-	LAYER(KEY_MENUKEY,KEY_ESC), /* $39	← */
+	LAYER(KEY_F12,KEY_ESC), /* $39	← */
 	LAYER(KEY_TAB,KEY_TAB), /* $3A	Control */
 	LAYER(KEY_F2,KEY_2), /* $3B	2 */
 	KEY_SPACE, /* $3C	Space */
@@ -127,40 +127,42 @@ unsigned int c64keytable[]=
 	QUAL_LAYERKEY  /* $3F	Run/Stop */
 };
 
+#if 0
 static void c64_rb_write(struct c64keyboard *r,int in)
 {
 //	printf("%x ",in);
 	r->outbuf[r->out_cpu]=in;
 	r->out_cpu=(r->out_cpu+1) & (C64KEY_RINGBUFFER_SIZE-1);
 }
+#endif
 
 void c64keyboard_write(struct c64keyboard *r,int in)
 {
-	int mv=Menu_Visible();
-	if((in&0xff)!=KEY_MENUKEY)
-	{
+//	int mv=Menu_Visible();
+//	if((in&0xff)!=KEY_MENUKEY)
+//	{
 		/* We disable interrupts here since we're adding key events both
 		   to the guest core's outgoing SPI buffer and to the controller's incoming
 		   PS/2 buffer */
 #if 1
-		DisableInterrupts();
+//		DisableInterrupts(); /* Don't need to disable interrupts if we're doing this from within an interrupt handler */
 		if(in&0x80)
 		{
-			if(!mv)
-				c64_rb_write(r,0xe0);
+//			if(!mv)
+//				c64_rb_write(r,0xe0);
 			PS2KeyboardReceive(0xe0);
 		}
 		if(in&0x100)
 		{
-			if(!mv)
-				c64_rb_write(r,0xf0);
+//			if(!mv)
+//				c64_rb_write(r,0xf0);
 			PS2KeyboardReceive(0xf0);
 		}
-		if(!mv)
-			c64_rb_write(r,in&0x7f);
+//		if(!mv)
+//			c64_rb_write(r,in&0x7f);
 		PS2KeyboardReceive(in&0x7f);
 		
-		EnableInterrupts();
+//		EnableInterrupts();
 //		putchar('\n');
 #endif
 #if 0
@@ -173,9 +175,9 @@ void c64keyboard_write(struct c64keyboard *r,int in)
 		SPI(in);
 		DisableIO();
 #endif
-	}
-	else if(in==KEY_MENUKEY)
-		Menu_ShowHide(-1);
+//	}
+//	else if(in==KEY_MENUKEY)
+//		Menu_ShowHide(-1);
 }
 
 
@@ -192,6 +194,7 @@ void handlec64keys()
 	unsigned int aa;
 	unsigned int ad;
 
+#if 0
 	if(CheckTimer(sendtime) && c64keys.out_hw!=c64keys.out_cpu)
 	{
 		char key=c64keys.outbuf[c64keys.out_hw];
@@ -202,6 +205,7 @@ void handlec64keys()
 		DisableIO();
 		c64keys.out_hw=(c64keys.out_hw+1) & (C64KEY_RINGBUFFER_SIZE-1);
 	}
+#endif
 
 	for(i=0;i<2;++i)
 	{

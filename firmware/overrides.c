@@ -10,6 +10,7 @@
 #include "user_io.h"
 #include "spi.h"
 #include "timer.h"
+#include "interrupts.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -238,9 +239,16 @@ void coretoconfig(char *buf)
 }
 
 
+static void interrupthandler()
+{
+	handlec64keys();
+	PS2Handler();
+}
+
+
 char *autoboot()
 {
-    char *result=0;
+	char *result=0;
 	/* If a config file didn't cause a disk image to be loaded, attempt to mount a default image */
 
 	romname[0]=0;
@@ -252,9 +260,15 @@ char *autoboot()
 	romtype=0;
 	if(!LoadROM(bootrom_name))
 		result="ROM loading failed";
-    return(result);
+
+	initc64keys();
+	/* Override the interrupt handler previously set in PS2Init() */
+	SetIntHandler(&interrupthandler);
+
+	return(result);
 }
 
+#if 0
 char *get_rtc();
 
 void mainloop()
@@ -270,4 +284,4 @@ void mainloop()
 			user_io_send_rtc(get_rtc());
 	}
 }
-
+#endif
