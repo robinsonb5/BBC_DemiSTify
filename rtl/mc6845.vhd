@@ -455,6 +455,7 @@ begin
 					-- Terminate hsync after h_sync_width (0 means no hsync so this
 					-- can immediately override the setting above)
 					hs <= '0';
+					h_sync_counter <= (others => '0'); -- Avoid spamming the monitor with sync pulses immediately after reset.
 				end if;
 
 				-- Vertical active video
@@ -474,6 +475,7 @@ begin
 						-- Terminate vsync after v_sync_width (0 means 16 lines so this is
 						-- masked by 'vs' to ensure a full turn of the counter in this case)
 						vs <= '0';
+						v_sync_counter <= (others => '0'); -- Avoid spamming the monitor with sync pulses immediately after reset.
 					end if;
 				end if;
 			end if;
